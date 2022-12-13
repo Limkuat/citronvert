@@ -84,8 +84,9 @@ func SpectralFlatness(spectrum []Power) float64 {
 func DominantFreq(spectrum []Power) (dominant int) {
 	lastHighest := 0.0
 	for _, p := range spectrum {
-		if real(p.XHat) > lastHighest {
-			lastHighest = cmplx.Abs(p.XHat)
+		mod := cmplx.Abs(p.XHat)
+		if mod > lastHighest {
+			lastHighest = mod
 			dominant = p.F
 		}
 	}
