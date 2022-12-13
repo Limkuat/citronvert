@@ -48,16 +48,19 @@ func TestSpectralFlatness(t *testing.T) {
 		samplesFromFile("./test_data/white_plus_440.wav"),         // less flat (noise + tone, same volume)
 		samplesFromFile("./test_data/less_white_plus_440.wav"),    // even less flat (white + tone, attenuated noise)
 		samplesFromFile("./test_data/sine_440Hz.wav"),             // not flat (pure tone, no noise)
-
-		samplesFromFile("./test_data/voice.wav"),            // not flat (pure tone, no noise)
-		samplesFromFile("./test_data/white_plus_voice.wav"), // not flat (pure tone, no noise)
+		samplesFromFile("./test_data/voice.wav"),                  // only voice, no background noise (other than captured)
+		samplesFromFile("./test_data/white_plus_voice.wav"),       // same voice, white noise in background
 	}
 
 	for _, samples := range samplesSet {
-		//spectrum := Spectrum(samples)
-		//sf := SpectralFlatness(spectrum)
-		//df := DominantFreq(spectrum)
-		//t.Log("DF =", df, "Hz SF =", sf)
+		VADScore(samples)
+	}
+}
+
+func BenchmarkVAD(b *testing.B) {
+	samples := samplesFromFile("./test_data/white_plus_voice.wav")
+	b.Log("#samples", len(samples))
+	for n := 0; n < b.N; n++ {
 		VADScore(samples)
 	}
 }
