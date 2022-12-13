@@ -38,9 +38,10 @@ func NormalizedF64(samples []int16) []float64 {
 }
 
 func F64(samples []int16) []float64 {
+	const maxInt16AsF64 float64 = 32768.0
 	fsamples := make([]float64, len(samples))
 	for i, level := range samples {
-		fsamples[i] = float64(level) / float64(32768)
+		fsamples[i] = float64(level) / maxInt16AsF64
 	}
 	return fsamples
 }
