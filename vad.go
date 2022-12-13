@@ -1,10 +1,8 @@
 package citronvert
 
 import (
-	"fmt"
 	"math"
 	"math/cmplx"
-	"time"
 
 	"github.com/mjibson/go-dsp/fft"
 )
@@ -17,6 +15,13 @@ const (
 type Power struct {
 	F    int
 	XHat complex128
+}
+
+type VADResult struct {
+	SF     float64
+	E      float64
+	DF     int
+	Voiced bool
 }
 
 func NormalizedF64(samples []int16) []float64 {
@@ -107,13 +112,15 @@ func Energy(spectrum []Power) float64 {
 	return acc / float64(len(spectrum))
 }
 
-func VADScore(samples []float64) int {
-	t0 := time.Now()
+func VADScore(samples []float64) VADResult {
 	spectrum := Spectrum(samples)
 	SF := SpectralFlatness(spectrum)
 	DF := DominantFreq(spectrum)
 	E := Energy(spectrum)
-	fmt.Println(time.Since(t0))
-	fmt.Println("DF =", DF, "Hz SF =", SF, "E =", E)
-	return 0
+	return VADResult{
+		DF:     DF,
+		SF:     SF,
+		E:      E,
+		Voiced: false,
+	}
 }
